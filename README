@@ -1,0 +1,143 @@
+This a source code release of TaxSim.
+It has been tested on GNU/Linux.
+
+TaxSim
+===========
+TaxSim is an engine with several taxonomic metrics
+to pairs of terms in an ontology
+
+1) LICENSE
+===========
+GNU GENERAL PUBLIC LICENSE Version 2
+
+2) VERSION
+===========
+1.1
+
+3) CONTENT
+==========
+* src: source code
+* test: set of test.
+** test/ncit: NCIt graph and list of terms
+** test/go: GO graph and list of terms
+** test/snomed: SNOMED graph and list of terms
+** test/ncitExamples: examples with NCIt Terms
+** test/sr45: group 1 and 2 of the SR45 complex
+
+4) REQUIREMENTS
+===============
+* GNU Colecction Compiler (gcc)
+* GNU make (make).
+* POSIX thread (pthread) libraries
+
+5) INSTALLATION
+===============
+For GNU/Linux clean and generate necessary files
+
+   $>make clean
+   $>make
+
+The executable file taxsim is generated in the taxsim directory
+
+5) USAGE
+========
+The executable taxsim have 5 command line options. Three are mandatory
+command line options. Here, mandatory means that without specifying this
+option, the program won't work.
+
+taxsim command synopsis:
+	 taxsim [-m tax|str|ps] [-t <number of threads>] <graph> <terms> <annotations>
+
+The options in brackets are not mandatory. The following are the command line options:
+
+[-m tax|str|ps]   	# Taxonomic metric to use, where:
+    			"tax" is (1-dtax) metric
+			"str" is  (1 - d^{str}_{tax}) metric
+			"ps" is (1- dps) metric by Viktor Pekar and Steffen Staab
+[-t number of threads]	# Number of threads used to compute the metric between all pairs
+[-d]			# Obtain the description of the annotations in the output.
+[-l]			# Print the list of the Lower Common Ancestors between two terms.
+<graph>			# Ontology graph file
+<terms> 		# File with the terms of the ontology
+<annotations> 		# File with the terms to compute the metric between them
+
+The default values of the options are:
+
+-m  	    : "tax"
+-t	    : 1
+-d	    : "No"
+-l	    : "No"
+
+6) RUNNING SOME SAMPLES
+=======================
+1) Compute the value of similarity between all pairs using the default values.
+
+$>./taxsim  test/ncit/graphNCI.txt test/ncit/nci-term-desc.txt test/ncitExamples/nihEx.txt
+
+2) Compute the value of similarity using the metric d^{str}_{tax}, and the 
+Lower Commun Ancestors unsing one threads.
+
+$>./taxsim -m str -l test/ncit/graphNCI.txt test/ncit/nci-term-desc.txt test/ncitExamples/drugs.txt
+
+3) Compute the value of similarity using the metric d^{str}_{tax}, two threads, and 
+get the description of the annotations.
+
+$>./taxsim -m str -t 2 -d test/ncit/graphNCI.txt test/ncit/nci-term-desc.txt test/ncitExamples/drugs.txt
+
+7) TaxSim File Formats
+==========================
+The following explains the formats of the files used in the computation of the metric.
+
+7.1) Graph File Format
+======================
+The graph of the ontology must be an Direct Acyclic Graph (DAG).
+The vertices of the graph are the identifiers of the terms of the ontology.
+The first line has the following format:
+
+<<number of nodes>>[TAB]<<number of arcs>>
+
+Where <<number of nodes>> is the number de vertices of the graph,
+[TAB] is the tab space, and <<number of arcs>> is the number the arcs
+of the graph. The following lines in the file specify
+a source node, a  target node, and the cost of the arc:
+
+<<source node1>>[TAB]<<target node1 >>[TAB]<<cost1>>
+..
+..
+..
+<<source nodeN>>[TAB]<<target nodeN>>[TAB]<<costN>>
+
+7.2) File format of identifiers
+===============================
+We have a file with the IDs of the terms of the ontology and its description
+The format is as follows:
+<<Number of terms>>
+<<Term1>>[TAB]<<Description of the term1>>
+..
+..
+..
+<<TermN>>[TAB]<<Description of the termN>>
+
+Note that the number of terms must be equal to the number of nodes of the graph.
+
+7.3) Annotation File Format
+===========================
+The format is as follows:
+
+<<Number of annotations>>
+<<annotation1>>
+..
+..
+..
+<<annotationN>>
+
+Where <<annotationX>> is the identifier of the annotation in the ontology.
+
+8) CONTACT
+==========
+I hope you find TaxSim an useful tool. Please, let me know
+any comment, problem or suggestion.
+
+Guillermo Palma
+http://www.ldc.usb.ve/~gpalma
+gpalma@ldc.usb.ve
